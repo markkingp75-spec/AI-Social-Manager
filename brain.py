@@ -1,3 +1,5 @@
+import os
+
 import streamlit as st
 import time
 from google import genai
@@ -12,7 +14,7 @@ st.set_page_config(
 )
 
 # 2. Initialize the Gemini Client with your key
-client = genai.Client(api_key="AQ.Ab8RN6JorI2FOvw0H1_JkLYwoS1VF1cLGs_SRb3wizPAKR5Hpg")
+client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
 
 def generate_ai_response(prompt_text: str) -> str:
     """Helper function to generate copy, scripts, and code."""

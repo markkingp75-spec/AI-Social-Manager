@@ -1,6 +1,6 @@
 import os
 from supabase import create_client, Client
-
+import publisher
 # Initialize Supabase client using environment variables
 # This bypasses hardcoded keys completely!
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -231,7 +231,22 @@ if st.button("Generate Video Campaign", key="generate_video"):
                 st.markdown(video_script)
     else:
         st.warning("Please enter a prompt describing your video asset first!")
-
+# Place this after your AI generation code in brain.py
+if 'draft' in st.session_state:
+    st.subheader("Review & Publish")
+    # This allows you to edit the AI output before posting
+    edited_content = st.text_area("Edit your draft:", st.session_state.draft)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Publish to LinkedIn"):
+            # This calls the function you just wrote in publisher.py
+            success = publisher.publish_to_platform("LinkedIn", edited_content)
+            if success: st.success("Published to LinkedIn!")
+    with col2:
+        if st.button("Publish to Instagram"):
+            success = publisher.publish_to_platform("Instagram", edited_content)
+            if success: st.success("Published to Instagram!")
 
 # 3. Call the function at the absolute bottom (flush left, no indentation)
 render_connections_management()

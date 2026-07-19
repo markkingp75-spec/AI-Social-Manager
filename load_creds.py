@@ -4,15 +4,16 @@ from google_auth_oauthlib.flow import Flow
 # Define the scopes here
 SCOPES = ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile', 'openid']
 
-
-
 def load_creds():
-    # Access the 'web' dictionary inside the 'google_client_secret' section
-    web_config = st.secrets["google_client_secret"]["web"]
+    # Get the raw configuration
+    raw_config = st.secrets["google_client_secret"]["web"]
     
-    # Now use these values to construct your flow
+    # Wrap it in a dictionary with the key "web"
+    wrapped_config = {"web": raw_config}
+    
+    # Now pass the wrapped_config to the flow
     flow = Flow.from_client_config(
-        web_config,
+        wrapped_config,
         scopes=SCOPES,
         redirect_uri="https://ai-social-manager-4ds4mj8rwpzynvwt4wtjht.streamlit.app"
     )

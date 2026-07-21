@@ -405,6 +405,20 @@ if st.button("Generate & Publish to All Channels"):
             st.success("Autonomous campaign execution complete!")
             for res in results:
                 st.write(res)
+                from apscheduler.schedulers.background import BackgroundScheduler
+import streamlit as st
+
+def daily_autonomous_job():
+    # This runs automatically every day in the background
+    print("Executing daily automated social media campaign...")
+    # Add your video generation and publishing logic here
+
+# Check if scheduler is already running to prevent duplicate threads in Streamlit
+if "scheduler" not in st.session_state:
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(daily_autonomous_job, 'interval', days=1)
+    scheduler.start()
+    st.session_state["scheduler"] = scheduler
 # 3. Call the function at the absolute bottom (flush left, no indentation)
 render_connections_management()
 

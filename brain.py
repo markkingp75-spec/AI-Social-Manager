@@ -216,8 +216,7 @@ def compile_marketing_video(script_text):
 st.markdown("---")  # Adds a clean visual dividing line
 st.markdown("### 🎬 Nexus Autonomous Video Creator")
 video_prompt = st.text_area("What is this marketing video about?", placeholder="e.g., A 15-second TikTok ad explaining how our software automates database management...")
-if st.button("Generate Video Campaign", key="generate_campaign_btn"):
-if st.button("Generate Video Campaign", key="generate_video"):
+if st.button("Generate Video Campaign", key="generate_campaign_btn"): 
     if video_prompt:
         with st.spinner("Gemini is drafting your high-converting storyboard..."):
             # 1. Get the generated script from Gemini
@@ -230,7 +229,7 @@ if st.button("Generate Video Campaign", key="generate_video"):
             with st.expander("📝 View Generated Storyboard & Voiceover Script", expanded=True):
                 st.markdown(video_script)
     else:
-        st.warning("Please enter a prompt describing your video asset first!")
+        st.warning("Please enter a prompt describing your video asset first!") 
 # Place this after your AI generation code in brain.py
 if 'draft' in st.session_state:
     st.subheader("Review & Publish")
@@ -375,9 +374,7 @@ publish_tiktok = st.checkbox("TikTok", value=True)
 publish_twitter = st.checkbox("Twitter (X)", value=True)
 publish_yt = st.checkbox("YouTube Shorts", value=True)
 
-if st.button("Generate & Publish to All Channels"):
-    if video_prompt.strip() == "":
-            if st.button("Generate & Publish to All Channels", key="generate_all_channels_btn"):
+if st.button("Generate & Publish to All Channels", key="generate_all_channels_btn"):
     if video_prompt.strip() == "":
         st.warning("Please enter a description or prompt for your video first.")
     else:

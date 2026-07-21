@@ -247,6 +247,26 @@ if 'draft' in st.session_state:
         if st.button("Publish to Instagram"):
             success = publisher.publish_to_platform("Instagram", edited_content)
             if success: st.success("Published to Instagram!")
+            st.markdown("### 🎬 Nexus Autonomous Video Creator")
+st.write("Generate high-converting marketing videos and social content powered by AI.")
+
+# User prompt input for the video
+video_prompt = st.text_area(
+    "What is this marketing video about?",
+    placeholder="e.g., A 15-second TikTok ad explaining how our software automates database management"
+)
+
+if st.button("Generate Video Asset"):
+    if video_prompt.strip() == "":
+        st.warning("Please enter a description or prompt for your video first.")
+    else:
+        with st.spinner("Generating your video script and assets..."):
+            # Placeholder for your AI video/script generation logic
+            # You can connect this to your Gemini API call
+            st.success("Video assets and script successfully generated!")
+            
+            # Show a mock preview or output box
+            st.text_area("Generated Script & Caption Output", value=f"Script for: {video_prompt}\n\n[Scene 1]: Hook the audience with a fast-paced problem statement...\n[Call to Action]: Try our app today!")
 st.markdown("### 🚀 Connect Social Channels")
 st.write("Link your accounts to push your generated videos directly to your channels.")
 

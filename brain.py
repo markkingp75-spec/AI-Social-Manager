@@ -216,7 +216,7 @@ def compile_marketing_video(script_text):
 st.markdown("---")  # Adds a clean visual dividing line
 st.markdown("### 🎬 Nexus Autonomous Video Creator")
 video_prompt = st.text_area("What is this marketing video about?", placeholder="e.g., A 15-second TikTok ad explaining how our software automates database management...")
-
+if st.button("Generate Video Campaign", key="generate_campaign_btn"):
 if st.button("Generate Video Campaign", key="generate_video"):
     if video_prompt:
         with st.spinner("Gemini is drafting your high-converting storyboard..."):
@@ -377,6 +377,7 @@ publish_yt = st.checkbox("YouTube Shorts", value=True)
 
 if st.button("Generate & Publish to All Channels"):
     if video_prompt.strip() == "":
+        if st.button("Generate Video Asset", key="generate_asset_btn"):
         st.warning("Please enter a description or prompt for your video first.")
     else:
         with st.spinner("AI is generating your video asset and dispatching to social networks..."):

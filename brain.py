@@ -377,10 +377,18 @@ publish_yt = st.checkbox("YouTube Shorts", value=True)
 
 if st.button("Generate & Publish to All Channels"):
     if video_prompt.strip() == "":
-        if st.button("Generate Video Asset", key="generate_asset_btn"):
+            if st.button("Generate & Publish to All Channels", key="generate_all_channels_btn"):
+    if video_prompt.strip() == "":
         st.warning("Please enter a description or prompt for your video first.")
     else:
         with st.spinner("AI is generating your video asset and dispatching to social networks..."):
+            # 1. Simulate or execute AI Video/Content Generation
+            generated_script = f"Marketing Campaign: {video_prompt}\n[Visual]: Dynamic product showcase"
+            
+            # 2. Automated multi-platform dispatch logic loop
+            results = []
+            if publish_fb:
+                results.append("Posted successfully to Facebook Page")
             
             # 1. Simulate or execute AI Video/Content Generation
             generated_script = f"Marketing Campaign: {video_prompt}\n[Visual]: Dynamic product showcase\n[CTA]: Get it now!"

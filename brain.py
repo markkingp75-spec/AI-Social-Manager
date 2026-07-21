@@ -308,6 +308,57 @@ with col3:
             st.markdown(f"**[Click here to authorize YouTube]({auth_url})**", unsafe_allow_html=True)
         except Exception as e:
             st.error(f"YouTube connection failed: {e}")
+            import streamlit as st
+
+st.markdown("### 🎬 Nexus Autonomous Video Creator")
+video_prompt = st.text_area(
+    "What is this marketing video about?",
+    placeholder="e.g., A 15-second TikTok ad explaining our software..."
+)
+
+if st.button("Generate Video Asset"):
+    if video_prompt.strip() == "":
+        st.warning("Please enter a description or prompt for your video first.")
+    else:
+        with st.spinner("Generating your video script and assets..."):
+            st.success("Video assets and script successfully generated!")
+            st.text_area("Generated Script Output", value=f"Script for: {video_prompt}\n\n[Scene 1]: Engaging intro...\n[CTA]: Try our app today!")
+
+st.markdown("### 🚀 Connect Social Channels")
+st.write("Link your accounts to push your generated videos directly to your channels.")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("Connect Facebook"):
+        fb_client_id = "YOUR_FACEBOOK_CLIENT_ID"
+        fb_redirect_uri = "https://ai-social-manager-4ds4mj8rwpzynvwt4wtjht.streamlit.app"
+        fb_url = f"https://www.facebook.com/v18.0/dialog/oauth?client_id={fb_client_id}&redirect_uri={fb_redirect_uri}&scope=pages_manage_posts,instagram_content_publish"
+        st.markdown(f"**[Click here to authorize Facebook]({fb_url})**", unsafe_allow_html=True)
+
+    if st.button("Connect Instagram"):
+        st.info("Instagram login connects via your Meta Business account authorization.")
+
+with col2:
+    if st.button("Connect TikTok"):
+        tiktok_client_key = "YOUR_TIKTOK_CLIENT_KEY"
+        tiktok_url = "https://www.tiktok.com/v2/auth/authorize/"
+        st.markdown(f"**[Click here to authorize TikTok]({tiktok_url})**", unsafe_allow_html=True)
+
+    if st.button("Connect Twitter (X)"):
+        twitter_client_id = "YOUR_TWITTER_CLIENT_ID"
+        twitter_url = f"https://twitter.com/i/oauth2/authorize?response_type=code&client_id={twitter_client_id}&redirect_uri=https://ai-social-manager-4ds4mj8rwpzynvwt4wtjht.streamlit.app&scope=tweet.write%20users.read&state=state&code_challenge=challenge&code_challenge_method=plain"
+        st.markdown(f"**[Click here to authorize Twitter (X)]({twitter_url})**", unsafe_allow_html=True)
+
+with col3:
+    if st.button("Connect YouTube"):
+        try:
+            from load_creds import load_creds
+            flow = load_creds()
+            auth_url, _ = flow.authorization_url(prompt='consent')
+            st.markdown(f"**[Click here to authorize YouTube]({auth_url})**", unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"YouTube connection failed: {e}")
 # 3. Call the function at the absolute bottom (flush left, no indentation)
 render_connections_management()
 

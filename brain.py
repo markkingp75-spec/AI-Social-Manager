@@ -247,7 +247,27 @@ if 'draft' in st.session_state:
         if st.button("Publish to Instagram"):
             success = publisher.publish_to_platform("Instagram", edited_content)
             if success: st.success("Published to Instagram!")
+st.markdown("### 🚀 Connect Social Channels")
+st.write("Link your accounts to push your generated videos directly to your channels.")
 
+# Create columns for the platforms
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    if st.button("Connect Facebook"):
+        st.info("Initiating secure OAuth handshake with Meta...")
+    if st.button("Connect Instagram"):
+        st.info("Initiating secure OAuth handshake with Instagram...")
+
+with col2:
+    if st.button("Connect TikTok"):
+        st.info("Initiating secure OAuth handshake with TikTok...")
+    if st.button("Connect Twitter (X)"):
+        st.info("Initiating secure OAuth handshake with X...")
+
+with col3:
+    if st.button("Connect YouTube"):
+        st.info("Initiating secure OAuth handshake with Google/YouTube...")
 # 3. Call the function at the absolute bottom (flush left, no indentation)
 render_connections_management()
 

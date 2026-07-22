@@ -1,13 +1,5 @@
-import google.generativeai as genai
+import requests
 import streamlit as st
-
-# Force standard REST transport and explicit API key to bypass credential caching
-genai.configure(
-    api_key=st.secrets["GEMINI_API_KEY"],
-    transport='rest'
-)
-
-model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.title("AI Social Media Manager")
 
@@ -16,13 +8,31 @@ def generate_platform_content(topic, platform):
         "facebook": f"Write an engaging, community-focused Facebook post with emojis about: {topic}",
         "twitter": f"Write a concise, high-impact tweet (under 280 characters) with relevant hashtags about: {topic}",
         "tiktok": f"Write a punchy TikTok video caption with trending hashtag ideas about: {topic}",
-        "youtube": f"Write a descriptive YouTube video title and video description summary about: {topic}"
+        "youtube": f"Write a descriptive YouTube video title and video description summary about: {topic}",
+        "whatsapp": f"Write a catchy WhatsApp broadcast message about: {topic}"
     }
     
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
     
-    # Generate content using the properly configured model
-    response = model.generate_content(prompt)
+    api_key = st.secrets["GEMINI_API_KEY"]
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    
+    payload = {
+        "contents": [{
+            "parts": [{"text": prompt}]
+        }]
+    }
+    
+    response = requests.post(url, json=payload)
+    
+    if response.status_code == 200:
+        data = response.json()
+        try:
+            return data["candidates"][0]["content"]["parts"][0]["text"]
+        except (KeyError, IndexError):
+            return "Error parsing response structure from Gemini API."
+    else:
+        return f"API Error ({response.status_code}): {response.text}"
     return response.text
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")

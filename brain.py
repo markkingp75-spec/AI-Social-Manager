@@ -39,6 +39,7 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
             st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
             st.stop()
 
+        # Fixed URL pointing directly to Google Generative AI with the proper query parameter
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
 
         with st.spinner("Crafting tailored AI campaign content..."):

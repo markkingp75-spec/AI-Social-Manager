@@ -50,10 +50,9 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
                     f"within the {industry} industry. The campaign is about: {topic}. "
                     f"Include high-converting hooks, calls to action, and relevant hashtags."
                 )
-
                 try:
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.5-flash',
                         contents=custom_prompt,
                     )
                     st.success(f"Generated successfully for {platform}!")

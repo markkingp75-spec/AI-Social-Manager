@@ -1,5 +1,7 @@
 import streamlit as st
 import google.generativeai as genai
+# Configure Gemini with your secret key
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
 st.title("AI Social Media Manager")
 

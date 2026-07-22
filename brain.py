@@ -1,8 +1,8 @@
 import google.generativeai as genai
 import streamlit as st
 
-# 1. Configure the API key once
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+# Initialize client explicitly using the secret key
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
 
 # 2. Instantiate the model globally
 model = genai.GenerativeModel('gemini-1.5-flash')
@@ -22,7 +22,10 @@ def generate_platform_content(topic, platform):
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
     
     # Generate content using the model
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+    model='gemini-1.5-flash',
+    contents=prompt
+)
     return response.text
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")

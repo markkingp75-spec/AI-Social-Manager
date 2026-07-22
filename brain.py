@@ -32,14 +32,12 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
     elif not selected_platforms:
         st.warning("Please select at least one platform.")
     else:
-        # Secure API connection using the REST endpoint and API key
         try:
             api_key = st.secrets["GEMINI_API_KEY"]
         except Exception:
             st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
             st.stop()
 
-        # Fixed URL pointing directly to Google Generative AI with the proper query parameter
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
 
         with st.spinner("Crafting tailored AI campaign content..."):

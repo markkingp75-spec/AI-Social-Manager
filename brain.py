@@ -1,8 +1,12 @@
-from click import prompt
-import streamlit as st
 import google.generativeai as genai
-# Configure Gemini with your secret key
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+import streamlit as st
+
+# Explicitly pass your key from Streamlit secrets
+api_key = st.secrets.get("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
+
+# Now initialize your model safely
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.title("AI Social Media Manager")
 

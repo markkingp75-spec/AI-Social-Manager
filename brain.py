@@ -1,12 +1,14 @@
 import google.generativeai as genai
 import streamlit as st
 
-# Explicitly pass your key from Streamlit secrets
-api_key = st.secrets.get("GEMINI_API_KEY")
-genai.configure(api_key=api_key)
+# Force configure with the explicit API key from secrets
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-# Now initialize your model safely
-model = genai.GenerativeModel('gemini-1.5-flash') # gemini-pro
+# Pass the client explicitly or let configure handle the default model creation
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    client_options={"api_key": st.secrets["GEMINI_API_KEY"]}
+)
 
 st.title("AI Social Media Manager")
 

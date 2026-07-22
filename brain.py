@@ -1,28 +1,29 @@
 import google.generativeai as genai
 import streamlit as st
 
-# Force configure with the explicit API key from secrets
+# 1. Configure the API key once
 genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
 
-# 1. Configure the library globally with your key
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-
-# 2. Instantiate the model cleanly
+# 2. Instantiate the model globally
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.title("AI Social Media Manager")
 
-# Add your function here:
+# 3. Define your function properly with generation inside it
 def generate_platform_content(topic, platform):
     prompts = {
         "facebook": f"Write an engaging, community-focused Facebook post with emojis about: {topic}",
         "twitter": f"Write a concise, high-impact tweet (under 280 characters) with relevant hashtags about: {topic}",
         "tiktok": f"Write a punchy TikTok video caption with trending hashtag ideas about: {topic}",
-        "youtube": f"Write a descriptive YouTube video title and video description summary about: {topic}",
-        "whatsapp": f"Write a short, direct WhatsApp broadcast message about: {topic}"
+        "youtube": f"Write a descriptive YouTube video title and video description summary about: {topic}"
     }
+    
+    # Get the correct prompt for the platform
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
+    
+    # Generate content using the model
     response = model.generate_content(prompt)
+    return response.text
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
 

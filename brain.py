@@ -1,3 +1,4 @@
+from click import prompt
 import streamlit as st
 import google.generativeai as genai
 # Configure Gemini with your secret key
@@ -15,8 +16,7 @@ def generate_platform_content(topic, platform):
         "whatsapp": f"Write a short, direct WhatsApp broadcast message about: {topic}"
     }
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
-    response = genai.GenerativeModel('gemini-1.5-flash').generate_content(prompt)
-    return response.text
+    response = genai.GenerativeModel('models/gemini-1.5-flash-latest').generate_content(prompt)   
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
 

@@ -1,10 +1,12 @@
 import google.generativeai as genai
 import streamlit as st
 
-# Configure the library directly with your API key
-genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+# Force standard REST transport and explicit API key to bypass credential caching
+genai.configure(
+    api_key=st.secrets["GEMINI_API_KEY"],
+    transport='rest'
+)
 
-# Initialize the model
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.title("AI Social Media Manager")

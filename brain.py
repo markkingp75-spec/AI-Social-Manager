@@ -6,7 +6,7 @@ api_key = st.secrets.get("GEMINI_API_KEY")
 genai.configure(api_key=api_key)
 
 # Now initialize your model safely
-model = genai.GenerativeModel('gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash') # gemini-pro
 
 st.title("AI Social Media Manager")
 
@@ -20,7 +20,7 @@ def generate_platform_content(topic, platform):
         "whatsapp": f"Write a short, direct WhatsApp broadcast message about: {topic}"
     }
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
-    response = genai.GenerativeModel('gemini-pro').generate_content(prompt)   
+    response = model.generate_content(prompt)
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
 

@@ -28,6 +28,29 @@ publish_twitter = st.checkbox("Twitter (X)", value=True, key="cb_twitter")
 publish_yt = st.checkbox("YouTube Shorts", value=True, key="cb_yt")
 
 
+# Custom background styling
+page_bg_img = """
+<style>
+[data-testid="stAppViewContainer"] {
+    background-image: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+[data-testid="stHeader"] {
+    background: rgba(0,0,0,0);
+}
+</style>
+"""
+
+st.markdown(page_bg_img, unsafe_allow_html=True)
+
+# Your app content goes here
+st.title("AI Social Media Manager")
+st.write("Welcome to your dashboard!")
+
+
 # Accessing Facebook credentials
 fb_app_id = st.secrets["facebook"]["app_id"]
 fb_app_secret = st.secrets["facebook"]["app_secret"]

@@ -18,7 +18,6 @@ def generate_platform_content(topic, platform):
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
 
-video_prompt = st.text_area("What is this marketing video about?", key="secondary_video_prompt_input")
 
 publish_fb = st.checkbox("Facebook Page", value=True, key="cb_fb")
 publish_ig = st.checkbox("Instagram Business", value=True, key="cb_ig")
@@ -43,11 +42,6 @@ x_secret_key = st.secrets["x"]["secret_key"]
 yt_client_id = st.secrets["youtube"]["client_id"]
 yt_client_secret = st.secrets["youtube"]["client_secret"]
 
-if st.button("Generate Video Campaign", key="unique_campaign_btn"):
-    if not video_prompt.strip():
-        st.warning("Please enter a description or prompt for your video first.")
-    else:
-        st.success("Storyboard & Script Rendered Successfully!")
 
 if st.button("Generate & Publish to All Channels", key="unique_all_channels_btn"):
     if not video_prompt.strip():

@@ -1,12 +1,12 @@
-import requests
 import streamlit as st
+from google import genai
 
 st.set_page_config(page_title="AI Social & Media Manager", page_icon="🚀", layout="wide")
 
 st.title("🚀 AI Social & Media Manager")
-st.markdown("Generate and publish professional AI marketing copy, advertising campaigns, and video concepts directly to all your platforms.")
+st.markdown("Generate and publish professional AI marketing copy directly to all your platforms.")
 
-# Sidebar configuration for campaigns
+# Sidebar configuration
 st.sidebar.header("Campaign Settings")
 industry = st.sidebar.selectbox(
     "Select Industry / Niche",
@@ -18,7 +18,7 @@ content_type = st.sidebar.selectbox(
     ["Social Media Post", "Video Script & Concept", "Ad Copy", "Broadcast Message"]
 )
 
-topic = st.sidebar.text_area("What is your campaign about?", "Launching a cutting-edge AI platform for global brands.")
+topic = st.sidebar.text_area("What is your campaign about?", "Launching a cutting-edge platform for global brands.")
 
 selected_platforms = st.sidebar.multiselect(
     "Select Target Platforms",
@@ -38,7 +38,8 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
             st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
             st.stop()
 
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+        # Initialize the official client
+        client = genai.Client(api_key=api_key)
 
         with st.spinner("Crafting tailored AI campaign content..."):
             for platform in selected_platforms:
@@ -50,22 +51,16 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
                     f"Include high-converting hooks, calls to action, and relevant hashtags."
                 )
 
-                payload = {
-                    "contents": [{"parts": [{"text": custom_prompt}]}]
-                }
-
                 try:
-                    response = requests.post(url, json=payload, timeout=30)
-                    if response.status_code == 200:
-                        res_data = response.json()
-                        generated_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-                        st.success(f"Generated successfully for {platform}!")
-                        st.write(generated_text)
-                        st.markdown("---")
-                    else:
-                        st.error(f"API Error for {platform}: {response.text}")
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=custom_prompt,
+                    )
+                    st.success(f"Generated successfully for {platform}!")
+                    st.write(response.text)
+                    st.markdown("---")
                 except Exception as e:
-                    st.error(f"Connection error for {platform}: {e}")
+                    st.error(f"API Error for {platform}: {e}")
 
         st.balloons()
         st.success("All selected channels processed successfully!")

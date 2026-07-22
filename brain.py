@@ -16,7 +16,7 @@ def generate_platform_content(topic, platform):
         "whatsapp": f"Write a short, direct WhatsApp broadcast message about: {topic}"
     }
     prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
-    response = genai.GenerativeModel('models/gemini-1.5-flash-latest').generate_content(prompt)   
+    response = genai.GenerativeModel('gemini-pro').generate_content(prompt)   
 
 video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
 

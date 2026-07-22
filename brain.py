@@ -1,73 +1,72 @@
 import requests
 import streamlit as st
 
-st.title("AI Social Media Manager")
-st.write("Welcome to your dashboard!")
+st.set_page_config(page_title="AI Social & Media Manager", page_icon="🚀", layout="wide")
 
-# Accessing Credentials
-fb_app_id = st.secrets["facebook"]["app_id"]
-fb_app_secret = st.secrets["facebook"]["app_secret"]
+st.title("🚀 AI Social & Media Manager")
+st.markdown("Generate and publish professional AI marketing copy, advertising campaigns, and video concepts directly to all your platforms.")
 
-tiktok_key = st.secrets["tiktok"]["client_key"]
-tiktok_secret = st.secrets["tiktok"]["client_secret"]
+# Sidebar configuration for campaigns
+st.sidebar.header("Campaign Settings")
+industry = st.sidebar.selectbox(
+    "Select Industry / Niche",
+    ["Marketing & Advertising", "Movies & Entertainment", "Technology & SaaS", "E-Commerce", "Real Estate", "Fitness & Health"]
+)
 
-x_consumer_key = st.secrets["x"]["consumer_key"]
-x_secret_key = st.secrets["x"]["secret_key"]
+content_type = st.sidebar.selectbox(
+    "Content Format",
+    ["Social Media Post", "Video Script & Concept", "Ad Copy", "Broadcast Message"]
+)
 
-yt_client_id = st.secrets["youtube"]["client_id"]
-yt_client_secret = st.secrets["youtube"]["client_secret"]
+topic = st.sidebar.text_area("What is your campaign about?", "Launching a cutting-edge AI platform for global brands.")
 
-def generate_platform_content(topic, platform):
-    prompts = {
-        "facebook": f"Write an engaging, community-focused Facebook post with emojis about: {topic}",
-        "twitter": f"Write a concise, high-impact tweet (under 280 characters) with relevant hashtags about: {topic}",
-        "tiktok": f"Write a punchy TikTok video caption with trending hashtag ideas about: {topic}",
-        "youtube": f"Write a descriptive YouTube video title and video description summary about: {topic}",
-        "whatsapp": f"Write a catchy WhatsApp broadcast message about: {topic}"
-    }
-    
-    prompt = prompts.get(platform.lower(), f"Write a social media post about: {topic}")
-    api_key = st.secrets["GEMINI_API_KEY"]
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-    
-    payload = {
-        "contents": [{
-            "parts": [{"text": prompt}]
-        }]
-    }
-    
-    try:
-        response = requests.post(url, json=payload)
-        if response.status_code == 200:
-            data = response.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"]
-        else:
-            return f"API Error: {response.text}"
-    except Exception as e:
-        return f"Connection Error: {str(e)}"
+selected_platforms = st.sidebar.multiselect(
+    "Select Target Platforms",
+    ["Facebook", "Instagram", "TikTok", "Twitter", "YouTube", "WhatsApp"],
+    default=["Facebook", "Instagram", "TikTok"]
+)
 
-video_prompt = st.text_area("What is this marketing video about?", key="main_video_prompt_input")
-
-publish_fb = st.checkbox("Facebook Page", value=True, key="cb_fb")
-publish_ig = st.checkbox("Instagram Business", value=True, key="cb_ig")
-publish_tiktok = st.checkbox("TikTok", value=True, key="cb_tiktok")
-publish_twitter = st.checkbox("Twitter (X)", value=True, key="cb_twitter")
-publish_yt = st.checkbox("YouTube Shorts", value=True, key="cb_yt")
-
-if st.button("Generate & Publish to All Channels", key="unique_all_channels_btn"):
-    if not video_prompt.strip():
-        st.warning("Please enter a description or prompt for your video first.")
+if st.sidebar.button("Generate & Publish Campaign", type="primary"):
+    if not topic.strip():
+        st.warning("Please enter a campaign topic.")
+    elif not selected_platforms:
+        st.warning("Please select at least one platform.")
     else:
-        with st.spinner("AI is generating your video asset and dispatching to social networks..."):
-            fb_caption = generate_platform_content(video_prompt, "facebook")
-            tiktok_caption = generate_platform_content(video_prompt, "tiktok")
-            twitter_caption = generate_platform_content(video_prompt, "twitter")
-            youtube_details = generate_platform_content(video_prompt, "youtube")
-            
-            st.write("### Generated Content Preview")
-            st.info(f"**Facebook:** {fb_caption}")
-            st.info(f"**TikTok:** {tiktok_caption}")
-            st.info(f"**Twitter:** {twitter_caption}")
-            st.info(f"**YouTube:** {youtube_details}")
-            
-        st.success("Posted successfully to selected channels!")
+        # Secure API connection using the REST endpoint and API key
+        try:
+            api_key = st.secrets["GEMINI_API_KEY"]
+        except Exception:
+            st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
+            st.stop()
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+
+        with st.spinner("Crafting tailored AI campaign content..."):
+            for platform in selected_platforms:
+                st.subheader(f"📌 {platform} Content")
+
+                custom_prompt = (
+                    f"Create an engaging {content_type.lower()} tailored for {platform} "
+                    f"within the {industry} industry. The campaign is about: {topic}. "
+                    f"Include high-converting hooks, calls to action, and relevant hashtags."
+                )
+
+                payload = {
+                    "contents": [{"parts": [{"text": custom_prompt}]}]
+                }
+
+                try:
+                    response = requests.post(url, json=payload, timeout=30)
+                    if response.status_code == 200:
+                        res_data = response.json()
+                        generated_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                        st.success(f"Generated successfully for {platform}!")
+                        st.write(generated_text)
+                        st.markdown("---")
+                    else:
+                        st.error(f"API Error for {platform}: {response.text}")
+                except Exception as e:
+                    st.error(f"Connection error for {platform}: {e}")
+
+        st.balloons()
+        st.success("All selected channels processed successfully!")

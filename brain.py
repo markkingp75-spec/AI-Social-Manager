@@ -27,7 +27,7 @@ def generate_social_content(prompt_topic, niche):
             raw_text = res_json["candidates"][0]["content"]["parts"][0]["text"]
             return f"{raw_text}\n\n💳 Unlock full access & upgrade your tool: {PAYSTACK_CHECKOUT_LINK}"
         else:
-            return f"API Error response: {str(res_json)}\n\n💳 Upgrade your tool: {PAYSTACK_CHECKOUT_LINK}"
+            return f"API Response Error: {str(res_json)}\n\n💳 Upgrade your tool: {PAYSTACK_CHECKOUT_LINK}"
             
     except Exception as e:
         return f"Generation Error: {str(e)}\n\n💳 Upgrade your tool: {PAYSTACK_CHECKOUT_LINK}"

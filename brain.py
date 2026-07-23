@@ -1,98 +1,33 @@
-import time
-from publisher import publish_to_social_media
-import streamlit as st
-from google import genai
+import os
+import google.generativeai as genai
 
-# Page configuration
-st.set_page_config(
-    page_title="AI Social & Media Manager", page_icon="🚀", layout="wide"
-)
+# Configure Gemini AI
+GEMINI_KEY = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_KEY)
 
-st.title("🚀 AI Social & Media Manager")
-st.markdown(
-    "Generate professional marketing content and publish directly to your social"
-    " channels using a single token."
-)
+# Your live Paystack payment link
+PAYSTACK_CHECKOUT_LINK = "https://paystack.shop/pay/s52douy9ie"
 
-# --- SIDEBAR CONFIGURATION ---
-st.sidebar.header("Campaign & Client Settings")
-
-client_name = st.sidebar.text_input("Client / Brand Name", value="My Brand")
-industry = st.sidebar.selectbox(
-    "Select Industry / Niche",
-    [
-        "Marketing & Advertising",
-        "E-Commerce & Retail",
-        "Real Estate",
-        "Fitness & Coaching",
-        "Food & Restaurant",
-        "Technology & SaaS",
-    ],
-)
-
-content_type = st.sidebar.selectbox(
-    "Content Format",
-    [
-        "Social Media Post",
-        "Video Script & Concept",
-        "Ad Copy",
-        "Broadcast Message",
-    ],
-)
-
-topic = st.sidebar.text_area(
-    "What is your campaign about?",
-    "Launching a cutting-edge platform for global brands.",
-)
-
-selected_platforms = st.sidebar.multiselect(
-    "Select Target Platforms",
-    ["Facebook", "Instagram", "TikTok", "Twitter", "YouTube"],
-    default=["Facebook", "Instagram", "TikTok"],
-)
-
-# --- MAIN EXECUTION BLOCK ---
-if st.sidebar.button("Generate & Publish Campaign", type="primary"):
-  if not topic.strip():
-    st.warning("Please enter a campaign topic.")
-  elif not selected_platforms:
-    st.warning("Please select at least one platform.")
-  else:
+def generate_social_content(prompt_topic, niche):
+    """
+    Generates marketing content via Gemini AI and embeds your Paystack checkout link.
+    """
     try:
-      gemini_key = st.secrets["GEMINI_API_KEY"]
-    except Exception:
-      st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
-      st.stop()
-
-    client = genai.Client(api_key=gemini_key)
-
-    with st.spinner(
-        f"Crafting unified AI campaign content for {client_name}..."
-    ):
-      custom_prompt = (
-          f"Create an engaging {content_type.lower()} tailored for multi-platform"
-          f" syndication within the {industry} industry for the brand"
-          f" '{client_name}'. The campaign is about: {topic}. Include"
-          f" high-converting hooks, calls to action, and relevant hashtags."
-      )
-
-      try:
-        response = client.models.generate_content(
-            model="gemini-3.5-flash",
-            contents=custom_prompt,
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        
+        full_prompt = (
+            f"Create a high-converting, professional social media marketing post "
+            f"for the niche: {niche}. Topic: {prompt_topic}. "
+            f"Keep it engaging and include call-to-action hooks."
         )
-        generated_text = response.text
-        st.success("Campaign content generated successfully!")
-        st.write(generated_text)
-        st.markdown("---")
-
-        # --- UNIFIED PUBLISHER PIPELINE ---
-        st.markdown("### 🚀 Unified Publishing Status")
-        pub_msg = publish_to_social_media(generated_text, selected_platforms)
-        st.info(pub_msg)
-
-      except Exception as e:
-        st.error(f"Generation or Publishing Error: {e}")
-
-    st.balloons()
-    st.success("Workflow completed successfully!")
+        
+        response = model.generate_content(full_prompt)
+        raw_text = response.text
+        
+        # Automatically attach your Paystack link to every generated post
+        final_post = f"{raw_text}\n\n💳 Unlock full access & upgrade your tool: {PAYSTACK_CHECKOUT_LINK}"
+        
+        return final_post
+        
+    except Exception as e:
+        return f"Generation Error: {str(e)}"

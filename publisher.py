@@ -2,48 +2,50 @@ import requests
 import streamlit as st
 
 
-def publish_to_facebook(content):
-  # Replace with your Facebook Page Access Token and Page ID from Meta Developer Portal
-  page_id = st.secrets.get("FB_PAGE_ID", "")
-  access_token = st.secrets.get("FB_ACCESS_TOKEN", "")
+def publish_to_social_media(content, platforms):
+  """Publishes content across multiple platforms simultaneously using the Zernio API."""
+  api_key = st.secrets.get("ZERNIO_API_KEY", "")
 
-  if not page_id or not access_token:
-    return "Error: Facebook credentials missing in secrets."
+  if not api_key:
+    return "Error: ZERNIO_API_KEY missing in Streamlit secrets."
 
-  url = f"https://graph.facebook.com/v18.0/{page_id}/feed"
-  payload = {"message": content, "access_token": access_token}
+  url = "https://zernio.com/api/v1/posts"
 
-  response = requests.post(url, data=payload)
-  if response.status_code == 200:
-    return "Successfully published to Facebook!"
-  else:
-    return f"Facebook API Error: {response.text}"
-
-
-def publish_to_instagram(content):
-  # Instagram requires an IG Business Account ID and access token via Meta Graph API
-  ig_user_id = st.secrets.get("IG_USER_ID", "")
-  access_token = st.secrets.get("FB_ACCESS_TOKEN", "")
-
-  if not ig_user_id or not access_token:
-    return "Error: Instagram credentials missing in secrets."
-
-  # Step 1: Create media container
-  container_url = f"https://graph.facebook.com/v18.0/{ig_user_id}/media"
-  container_payload = {
-      "caption": content,
-      "access_token": access_token,
-      # Note: For images/videos, a media URL (image_url or video_url) is required by Instagram
+  # Map platform names to Zernio identifiers
+  platform_mapping = {
+      "Facebook": "facebook",
+      "Instagram": "instagram",
+      "TikTok": "tiktok",
+      "Twitter": "twitter",
+      "YouTube": "youtube",
   }
 
-  # For text-only or general integration placeholder:
-  return "Instagram integration container ready. (Requires image/video asset link for direct publishing)."
+  # Format platforms array according to Zernio API structure
+  formatted_platforms = []
+  for p in platforms:
+    key = platform_mapping.get(p)
+    if key:
+      formatted_platforms.append({"platform": key})
 
+  if not formatted_platforms:
+    return "Error: No valid platforms selected for publishing."
 
-def publish_to_tiktok(content):
-  # TikTok Content Posting API integration placeholder
-  tiktok_token = st.secrets.get("TIKTOK_ACCESS_TOKEN", "")
-  if not tiktok_token:
-    return "Error: TikTok access token missing in secrets."
+  payload = {
+      "content": content,
+      "platforms": formatted_platforms,
+      "publishNow": True,
+  }
 
-  return "TikTok publisher configured."
+  headers = {
+      "Authorization": f"Bearer {api_key}",
+      "Content-Type": "application/json",
+  }
+
+  try:
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code in [200, 201]:
+      return "Successfully published across all selected channels via Zernio!"
+    else:
+      return f"Zernio API Error: {response.text}"
+  except Exception as e:
+    return f"Connection Error: {e}"

@@ -1,9 +1,5 @@
 import time
-from publisher import (
-    publish_to_facebook,
-    publish_to_instagram,
-    publish_to_tiktok,
-)
+from publisher import publish_to_social_media
 import streamlit as st
 from google import genai
 
@@ -15,13 +11,12 @@ st.set_page_config(
 st.title("🚀 AI Social & Media Manager")
 st.markdown(
     "Generate professional marketing content and publish directly to your social"
-    " channels."
+    " channels using a single token."
 )
 
 # --- SIDEBAR CONFIGURATION ---
 st.sidebar.header("Campaign & Client Settings")
 
-# Client Management fields
 client_name = st.sidebar.text_input("Client / Brand Name", value="My Brand")
 industry = st.sidebar.selectbox(
     "Select Industry / Niche",
@@ -52,7 +47,7 @@ topic = st.sidebar.text_area(
 
 selected_platforms = st.sidebar.multiselect(
     "Select Target Platforms",
-    ["Facebook", "Instagram", "TikTok", "Twitter", "YouTube", "WhatsApp"],
+    ["Facebook", "Instagram", "TikTok", "Twitter", "YouTube"],
     default=["Facebook", "Instagram", "TikTok"],
 )
 
@@ -64,71 +59,40 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
     st.warning("Please select at least one platform.")
   else:
     try:
-      api_key = st.secrets["GEMINI_API_KEY"]
+      gemini_key = st.secrets["GEMINI_API_KEY"]
     except Exception:
       st.error("GEMINI_API_KEY is missing from Streamlit secrets.")
       st.stop()
 
-    client = genai.Client(api_key=api_key)
+    client = genai.Client(api_key=gemini_key)
 
     with st.spinner(
-        f"Crafting tailored AI campaign content for {client_name}..."
+        f"Crafting unified AI campaign content for {client_name}..."
     ):
-      for i, platform in enumerate(selected_platforms):
-        st.subheader(f"📌 {platform} Content for {client_name}")
+      custom_prompt = (
+          f"Create an engaging {content_type.lower()} tailored for multi-platform"
+          f" syndication within the {industry} industry for the brand"
+          f" '{client_name}'. The campaign is about: {topic}. Include"
+          f" high-converting hooks, calls to action, and relevant hashtags."
+      )
 
-        custom_prompt = (
-            f"Create an engaging {content_type.lower()} tailored for {platform}"
-            f" within the {industry} industry for the brand '{client_name}'."
-            f" The campaign is about: {topic}. Include high-converting hooks,"
-            f" calls to action, and relevant hashtags."
+      try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=custom_prompt,
         )
-
-        # Pause slightly between requests to prevent rate limit spikes
-        if i > 0:
-          time.sleep(2)
-
-        generated_text = None
-        success = False
-
-        # Attempt generation with retry logic for 503 capacity errors
-        for attempt in range(3):
-          try:
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=custom_prompt,
-            )
-            generated_text = response.text
-            st.success(f"Generated successfully for {platform}!")
-            st.write(generated_text)
-            success = True
-            break
-          except Exception as e:
-            if "503" in str(e) and attempt < 2:
-              time.sleep(3)
-            else:
-              st.error(f"API Error for {platform}: {e}")
-              break
-
-        # --- PUBLISHER PIPELINE INTEGRATION ---
-        if success and generated_text:
-          st.markdown("### 🚀 Publishing Status")
-          if platform == "Facebook":
-            pub_msg = publish_to_facebook(generated_text)
-            st.info(pub_msg)
-          elif platform == "Instagram":
-            pub_msg = publish_to_instagram(generated_text)
-            st.info(pub_msg)
-          elif platform == "TikTok":
-            pub_msg = publish_to_tiktok(generated_text)
-            st.info(pub_msg)
-          else:
-            st.info(
-                f"Content formatted for {platform}. Direct API publishing"
-                " queued."
-            )
-
+        generated_text = response.text
+        st.success("Campaign content generated successfully!")
+        st.write(generated_text)
         st.markdown("---")
 
+        # --- UNIFIED PUBLISHER PIPELINE ---
+        st.markdown("### 🚀 Unified Publishing Status")
+        pub_msg = publish_to_social_media(generated_text, selected_platforms)
+        st.info(pub_msg)
+
+      except Exception as e:
+        st.error(f"Generation or Publishing Error: {e}")
+
     st.balloons()
-    st.success("All selected channels processed and published successfully!")
+    st.success("Workflow completed successfully!")

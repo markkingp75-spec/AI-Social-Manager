@@ -78,7 +78,7 @@ if st.sidebar.button("Generate & Publish Campaign", type="primary"):
 
       try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.5-flash",
             contents=custom_prompt,
         )
         generated_text = response.text

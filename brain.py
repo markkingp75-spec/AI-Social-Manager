@@ -3,8 +3,7 @@ import streamlit as st
 import requests
 import json
 
-def generate_social_content(topic, niche):
-    # Securely retrieve the Gemini API key from Streamlit secrets or environment variables
+def generate_social_content(topic, niche, content_type="Digital Marketing Campaign"):
     api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY")
     
     if not api_key:
@@ -13,7 +12,7 @@ def generate_social_content(topic, niche):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
     
-    prompt = f"Create an engaging, high-converting social media post and campaign strategy for the {niche} niche about: {topic}"
+    prompt = f"Act as an expert creator. Generate a professional {content_type} for the {niche} niche based on this topic/prompt: {topic}. Include engaging hooks, captions, and structured formatting suitable for social media distribution."
     
     payload = {
         "contents": [{

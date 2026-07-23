@@ -1,7 +1,7 @@
 import os
 import google.generativeai as genai
 
-# Configure Gemini AI
+# Configure Gemini securely using your Streamlit Secrets environment variable
 GEMINI_KEY = os.getenv("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_KEY)
 
@@ -10,7 +10,7 @@ PAYSTACK_CHECKOUT_LINK = "https://paystack.shop/pay/s52douy9ie"
 
 def generate_social_content(prompt_topic, niche):
     """
-    Generates marketing content via Gemini AI and embeds your Paystack checkout link.
+    Generates high-converting marketing copy via Gemini AI and embeds your Paystack payment link.
     """
     try:
         model = genai.GenerativeModel('gemini-1.5-flash')

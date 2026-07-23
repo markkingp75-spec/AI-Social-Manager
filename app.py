@@ -8,7 +8,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- LIVE BACKGROUND STYLING ---
+# --- LIVE DYNAMIC BACKGROUND STYLING ---
 st.markdown(
     """
     <style>
@@ -23,7 +23,7 @@ st.markdown(
         100% { background-position: 0% 50%; }
     }
     .main-header {
-        background-color: rgba(255, 255, 255, 0.85);
+        background-color: rgba(255, 255, 255, 0.90);
         padding: 20px;
         border-radius: 12px;
         backdrop-filter: blur(5px);
@@ -39,7 +39,7 @@ with st.container():
         """
         <div class="main-header">
             <h1 style="color: #1f1f1f; margin: 0;">🚀 AI Social & Media Manager Live</h1>
-            <p style="color: #4f4f4f; margin: 0;">Autonomous engine active. Live background and cross-platform channels fully operational.</p>
+            <p style="color: #4f4f4f; margin: 0;">Autonomous engine active. Live background, social channels, and campaign automation online.</p>
         </div>
         """,
         unsafe_allow_html=True
@@ -51,8 +51,8 @@ st.markdown("<br>", unsafe_allow_html=True)
 st.sidebar.header("Campaign Settings")
 niche = st.sidebar.selectbox("Select Niche", ["Digital Marketing", "E-commerce", "Tech & Software", "Fitness & Health", "Content Creation"])
 
-# Pre-filled high-converting prompt for instant testing
-default_prompt = "Announcing the official launch of our automated AI platform! Scale your social media presence across Facebook, Instagram, TikTok, and WhatsApp instantly. Join our live test phase today!"
+# Pre-filled high-converting prompt for testing and live deployment
+default_prompt = "Announcing the official launch of our automated AI platform! Scale your social media presence across Facebook, Instagram, TikTok, Twitter, and WhatsApp instantly. Join our live test phase today!"
 topic = st.sidebar.text_area("Campaign Topic / Prompt", default_prompt)
 
 st.sidebar.markdown("---")
@@ -64,7 +64,7 @@ tab1, tab2, tab3 = st.tabs(["📢 Campaign Generator", "🔗 Social Media Connec
 
 with tab1:
     st.subheader("Live Campaign Generator")
-    st.markdown("Click below to test your live AI pipeline and generate optimized copy for your channels:")
+    st.markdown("Click below to execute your AI pipeline and generate optimized content across your channels:")
     if st.button("Generate & Process Live Campaign"):
         with st.spinner("Nova is generating your live campaign..."):
             result = generate_social_content(topic, niche)
@@ -74,7 +74,7 @@ with tab1:
 
 with tab2:
     st.subheader("🔗 Social Media Channels Hub")
-    st.markdown("Your active channels linked for permanent broadcast:")
+    st.markdown("Your active channels linked for permanent cross-platform publishing:")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -84,10 +84,11 @@ with tab2:
     with col2:
         st.checkbox("TikTok Creator Hub (Active)", value=True)
         st.checkbox("X / Twitter (Active)", value=True)
-        st.success("Status: All channels linked to live background loop.")
+        st.success("Status: All platforms synchronized with live engine.")
 
 with tab3:
     st.subheader("Autonomous Code & System Diagnostics")
+    st.markdown("Run a live diagnostic scan of your application architecture:")
     if st.button("Run Live System Check"):
         with st.spinner("AI Supervisor analyzing live structure..."):
             diagnostic_report = run_self_upgrade_check()
